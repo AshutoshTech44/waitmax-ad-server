@@ -1,0 +1,1 @@
+export default function handler(req,res){res.writeHead(302,{Location:req.query.url||"https://bolt.new"});res.end();}
