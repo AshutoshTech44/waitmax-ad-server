@@ -7,24 +7,24 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const slash = String.fromCharCode(47);
-  const fallback = [
-    {
+  const dbUrl = process.env.DATABASE_URL;
+
+  if (!dbUrl) {
+    return res.status(200).json([{
       id: 'sp-1',
       badge: 'SPONSORED',
       title: 'Bolt.new AI',
-      description: 'Build and deploy full-stack web apps from a single prompt.',
+      description: 'ERROR: DATABASE_URL missing in Vercel',
       ctaText: 'Build Now',
       ctaUrl: 'https:' + slash + slash + 'bolt.new',
       payoutPerAd: 1
-    }
-  ];
+    }]);
+  }
 
   try {
-    if (!process.env.DATABASE_URL) return res.status(200).json(fallback);
-    const sql = neon(process.env.DATABASE_URL);
+    const sql = neon(dbUrl);
     const rows = await sql`SELECT id, title, description, cta_text, target_url FROM sponsor_ads WHERE active = TRUE ORDER BY id ASC LIMIT 20`;
-    if (!rows.length) return res.status(200).json(fallback);
-
+    
     const formatted = rows.map(r => ({
       id: String(r.id),
       badge: 'SPONSORED',
@@ -37,6 +37,14 @@ export default async function handler(req, res) {
 
     return res.status(200).json(formatted);
   } catch (e) {
-    return res.status(200).json(fallback);
+    return res.status(200).json([{
+      id: 'sp-1',
+      badge: 'SPONSORED',
+      title: 'DB Error',
+      description: String(e.message || e),
+      ctaText: 'Fix',
+      ctaUrl: 'https:' + slash + slash + 'bolt.new',
+      payoutPerAd: 1
+    }]);
   }
 }
