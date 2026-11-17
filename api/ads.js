@@ -1,1 +1,42 @@
-let ad={id:"sp-1",badge:"SPONSORED",title:"Build Apps 10x Faster with AI",desc:"Turn ideas into live web apps in seconds.",ctaText:"Visit Sponsor",ctaUrl:"https://bolt.new",payoutPerAd:1,impressions:0};export default function handler(req,res){res.setHeader("Access-Control-Allow-Origin","*");res.setHeader("Access-Control-Allow-Methods","GET,POST,OPTIONS");res.setHeader("Access-Control-Allow-Headers","Content-Type,x-admin-pass");if(req.method==="OPTIONS")return res.status(200).end();if(req.method==="POST"){const p=req.headers["x-admin-pass"]||"";if(p!==(process.env.ADMIN_PASSWORD||"waitmax2026"))return res.status(401).json({error:"Wrong Password"});const b=req.body||{};if(b.title)ad.title=String(b.title).slice(0,60);if(b.desc)ad.desc=String(b.desc).slice(0,140);if(b.ctaText)ad.ctaText=String(b.ctaText).slice(0,25);if(b.ctaUrl)ad.ctaUrl=String(b.ctaUrl);if(b.payoutPerAd)ad.payoutPerAd=Number(b.payoutPerAd)||1;ad.id="sp-"+Date.now().toString(36);return res.status(200).json({ok:true,ad});}ad.impressions+=1;res.setHeader("Cache-Control","s-maxage=10,stale-while-revalidate=30");return res.status(200).json(ad);}
+import { neon } from '@neondatabase/serverless';
+
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const slash = String.fromCharCode(47);
+  const fallback = [
+    {
+      id: 'sp-1',
+      badge: 'SPONSORED',
+      title: 'Bolt.new AI',
+      description: 'Build and deploy full-stack web apps from a single prompt.',
+      ctaText: 'Build Now',
+      ctaUrl: 'https:' + slash + slash + 'bolt.new',
+      payoutPerAd: 1
+    }
+  ];
+
+  try {
+    if (!process.env.DATABASE_URL) return res.status(200).json(fallback);
+    const sql = neon(process.env.DATABASE_URL);
+    const rows = await sql`SELECT id, title, description, cta_text, target_url FROM sponsor_ads WHERE active = TRUE ORDER BY id ASC LIMIT 20`;
+    if (!rows.length) return res.status(200).json(fallback);
+
+    const formatted = rows.map(r => ({
+      id: String(r.id),
+      badge: 'SPONSORED',
+      title: r.title,
+      description: r.description,
+      ctaText: r.cta_text || 'Try Free',
+      ctaUrl: r.target_url,
+      payoutPerAd: 1
+    }));
+
+    return res.status(200).json(formatted);
+  } catch (e) {
+    return res.status(200).json(fallback);
+  }
+}
