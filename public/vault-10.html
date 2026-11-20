@@ -33,7 +33,7 @@
   const unlocked = params.get("unlocked") === "1" || localCoins >= 10 || document.referrer.indexOf("waitmax") !== -1;
   const root = document.getElementById("app");
   if (!unlocked) {
-    root.innerHTML = '<div class="lock"><span class="badge">🔒 VAULT LOCKED · 10 WAITCOINS REQUIRED</span><h2>Earn 10 WaitCoins to Unlock This Vault</h2><p>Run WaitMax AI alongside ChatGPT, Gemini, Claude, or Sora while waiting for AI responses.</p><a class="cta" href="/">Launch WaitMax AI →</a></div>';
+    root.innerHTML = '<div class="lock"><span class="badge">🔒 VAULT LOCKED · 10 WAITCOINS REQUIRED</span><h2>Earn 10 WaitCoins to Unlock This Vault</h2><p>Run WaitMax AI alongside ChatGPT, Gemini, Claude, or Sora while waiting for AI responses.</p><a class="cta" href="/">Start on Mobile  →</a></div>';
     return;
   }
   const prompts = [
