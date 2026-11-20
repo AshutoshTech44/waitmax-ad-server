@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WaitMax AI — 25 WaitCoins Partner Perks Vault</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #070b14; color: #f8fafc; margin: 0; padding: 20px; line-height: 1.6; }
+  .box { max-width: 780px; margin: 0 auto; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 28px; }
+  .badge { display: inline-block; background: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b55; padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+  h1 { margin: 14px 0 6px; font-size: 26px; color: #fff; }
+  .sub { color: #94a3b8; margin-bottom: 22px; font-size: 15px; }
+  .perk { background: #1e293b; border-radius: 12px; padding: 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; border: 1px solid #334155; }
+  .perk h3 { margin: 0 0 4px; font-size: 17px; color: #fff; }
+  .perk p { margin: 0; font-size: 14px; color: #94a3b8; max-width: 520px; }
+  .btn { background: #2563eb; color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+  .lock { text-align: center; padding: 48px 20px; }
+  .lock h2 { color: #f87171; }
+  .cta { display: inline-block; margin-top: 16px; background: #f59e0b; color: #451a03; padding: 12px 22px; border-radius: 10px; font-weight: 700; text-decoration: none; }
+  .footer { margin-top: 26px; font-size: 13px; color: #64748b; text-align: center; border-top: 1px solid #1e293b; padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="box" id="app"></div>
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const localCoins = parseInt(localStorage.getItem("waitcoins") || "0", 10);
+  const unlocked = params.get("unlocked") === "1" || localCoins >= 25 || document.referrer.indexOf("waitmax") !== -1;
+  const root = document.getElementById("app");
+  if (!unlocked) {
+    root.innerHTML = '<div class="lock"><span class="badge">🔒 VAULT LOCKED · 25 WAITCOINS REQUIRED</span><h2>Earn 25 WaitCoins to Unlock Partner Perks</h2><p>Collect 25 WaitCoins while waiting on AI tools to claim verified builder credits & free tiers.</p><a class="cta" href="/">Launch WaitMax AI →</a></div>';
+    return;
+  }
+  const perks = [
+    { t: "⚡ Bolt.new AI — Free Full-Stack Token Starter", d: "Build and deploy full-stack web apps directly in your browser with free starter tokens.", u: "https://bolt.new?ref=waitmax" },
+    { t: "💜 Lovable AI — Free Daily Builder Credits", d: "Turn plain English prompts into production React apps with instant GitHub sync.", u: "https://lovable.dev?ref=waitmax" },
+    { t: "▲ v0 by Vercel — Free UI Generation Credits", d: "Generate clean shadcn/ui and Tailwind components in seconds.", u: "https://v0.dev?ref=waitmax" },
+    { t: "🎵 Suno AI — 50 Free Daily Music Credits", d: "Create studio-quality songs and instrumentals from text prompts every day.", u: "https://://suno.com" },
+    { t: "🔄 n8n Cloud — 14-Day Free AI Workflow Trial", d: "Automate AI agents and API webhooks without credit card lock-in.", u: "https://n8n.io?ref=waitmax" }
+  ];
+  let html = '<span class="badge">✅ UNLOCKED · 25 WAITCOINS PARTNER PERKS</span><h1>🎁 AI Builder Partner Credits & Perks Vault</h1><p class="sub">Claim verified free tiers, starter credits, and partner deals across top AI builder tools.</p>';
+  perks.forEach(function(pk) {
+    html += '<div class="perk"><div><h3>' + pk.t + '</h3><p>' + pk.d + '</p></div><a class="btn" href="' + pk.u + '" target="_blank" rel="noopener noreferrer">Claim Perk →</a></div>';
+  });
+  html += '<div class="footer">🔒 100% Private · Never Reads Your Chats · WaitMax AI Digital Rewards</div>';
+  root.innerHTML = html;
+})();
+</script>
+</body>
+</html>
